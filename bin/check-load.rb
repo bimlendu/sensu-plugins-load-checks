@@ -47,7 +47,7 @@ class CheckLoad < Sensu::Plugin::Check::CLI
          default: [3.5, 3.25, 3.0]
 
   def run
-    data = LoadAverage.new
+    data = LoadAverage.new "#{config[:proc_path]}"
     unknown "Could not read load average from #{config[:proc_path]} or `uptime`" if data.failed?
 
     message "Per core load average (#{data.cpu_count} CPU): #{data.load_avg}"

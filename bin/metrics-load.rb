@@ -53,7 +53,7 @@ class LoadStat < Sensu::Plugin::Metric::CLI::Graphite
          default: '/proc'
 
   def run
-    data = LoadAverage.new
+    data = LoadAverage.new "#{config[:proc_path]}"
     unknown 'Could not read load average from /proc or `uptime`' if data.failed?
 
     timestamp = Time.now.to_i
