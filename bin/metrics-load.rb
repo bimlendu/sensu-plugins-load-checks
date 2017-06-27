@@ -47,6 +47,11 @@ class LoadStat < Sensu::Plugin::Metric::CLI::Graphite
          long: '--scheme SCHEME',
          default: Socket.gethostname.to_s
 
+  option :proc_path,
+         long: '--proc-path /proc',
+         proc: proc(&:to_s),
+         default: '/proc'
+
   def run
     data = LoadAverage.new
     unknown 'Could not read load average from /proc or `uptime`' if data.failed?

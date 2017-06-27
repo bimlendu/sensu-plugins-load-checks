@@ -27,6 +27,11 @@ require 'sensu-plugin/check/cli'
 require_relative '../lib/sensu-plugins-load-checks/load-average.rb'
 
 class CheckLoad < Sensu::Plugin::Check::CLI
+  option :proc_path,
+         long: '--proc-path /proc',
+         proc: proc(&:to_s),
+         default: '/proc'
+
   option :warn,
          short: '-w L1,L5,L15',
          long: '--warn L1,L5,L15',
@@ -43,7 +48,7 @@ class CheckLoad < Sensu::Plugin::Check::CLI
 
   def run
     data = LoadAverage.new
-    unknown 'Could not read load average from /proc or `uptime`' if data.failed?
+    unknown "Could not read load average from #{config[:proc_path]} or `uptime`" if data.failed?
 
     message "Per core load average (#{data.cpu_count} CPU): #{data.load_avg}"
 

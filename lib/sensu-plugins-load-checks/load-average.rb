@@ -5,9 +5,9 @@ class LoadAverage
   end
 
   def load_avg
-    if File.exist?('/proc/loadavg')
+    if File.exist?("#{config[:proc_path]}/loadavg")
       # linux
-      File.read('/proc/loadavg').split.take(3).map { |a| (a.to_f / @cores).round(2) } rescue nil # rubocop:disable RescueModifier
+      File.read("#{config[:proc_path]}/loadavg").split.take(3).map { |a| (a.to_f / @cores).round(2) } rescue nil # rubocop:disable RescueModifier
     else
       # fallback for FreeBSD
       `uptime`.split(' ')[-3..-1].map(&:to_f).map { |a| (a.to_f / @cores).round(2) } rescue nil # rubocop:disable RescueModifier
@@ -15,8 +15,8 @@ class LoadAverage
   end
 
   def cpu_count
-    if File.exist?('/proc/cpuinfo')
-      File.read('/proc/cpuinfo').scan(/^processor/).count
+    if File.exist?("#{config[:proc_path]}/cpuinfo")
+      File.read("#{config[:proc_path]}/cpuinfo").scan(/^processor/).count
     else
       `sysctl -n hw.ncpu`.to_i
     end
